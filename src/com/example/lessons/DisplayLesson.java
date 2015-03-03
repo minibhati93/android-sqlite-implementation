@@ -1,13 +1,18 @@
 package com.example.lessons;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -155,8 +160,13 @@ public class DisplayLesson extends ActionBarActivity{
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				
-				if(position==4){
+				if(position == 2){
+					Log.d("Main", "clicked Email");
+					//Intent intent=new Intent("com.example.lessons.SENDEMAIL");
+	    			//startActivity(intent);
+					startComposeEmail();
+				}
+				else if(position==4){
 					
 					Log.d("Main", "clicked Bluetooth");
 					startBlueTooth();
@@ -166,8 +176,41 @@ public class DisplayLesson extends ActionBarActivity{
 				}
 			}
 
+			
+
 	
 		});
+	}
+	protected void startComposeEmail() {
+		// TODO Auto-generated method stub
+		
+		Log.i("email", "starting email composer");
+		Calendar c = Calendar.getInstance();
+		//System.out.println("Current time => " + c.getTime());
+		SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+		String formattedDate = df.format(c.getTime());
+
+	      //String emailContent = Lesson_Sub+" "+Lesson_Task;
+	      Intent emailIntent = new Intent(Intent.ACTION_SEND);
+	      emailIntent.setData(Uri.parse("mailto:"));
+	      emailIntent.setType("text/plain");
+
+
+	      emailIntent.putExtra(Intent.EXTRA_EMAIL, "");
+	      emailIntent.putExtra(Intent.EXTRA_CC, "");
+	      emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Lesson Planner: "+formattedDate);
+	      emailIntent.putExtra(Intent.EXTRA_TEXT, "");
+
+	      try {
+	         startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+	         finish();
+	         Log.i("email", "Finished sending email");
+	         //showToast("Email sent");
+	      } catch (android.content.ActivityNotFoundException ex) {
+	    	  
+	         showToast("No email client installed");
+	         
+	      }
 	}
 	private void startBlueTooth() {
 		 
@@ -189,6 +232,15 @@ public class DisplayLesson extends ActionBarActivity{
 		}
 		
 	}
+	public void showToast(String message){
+		Context context = getApplicationContext();
+		CharSequence text = message;
+		int duration = Toast.LENGTH_SHORT;
+
+		Toast toast = Toast.makeText(context, text, duration);
+		toast.show();
+	}
+	
 	 
 
 	 
